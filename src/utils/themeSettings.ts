@@ -41,6 +41,7 @@ export interface ResolvedThemeSettings {
   compactShowTrafficTotal: boolean;
   compactShowBilling: boolean;
   compactShowUptime: boolean;
+  showHomePing: boolean;
   showConnections: boolean;
   costIgnoredNodes: string[];
   costRateApiUrl: string;
@@ -74,6 +75,7 @@ export const DEFAULT_THEME_SETTINGS: ResolvedThemeSettings = {
   compactShowTrafficTotal: true,
   compactShowBilling: true,
   compactShowUptime: true,
+  showHomePing: true,
   showConnections: false,
   costIgnoredNodes: [],
   costRateApiUrl: DEFAULT_COST_RATE_API_URL,
@@ -148,6 +150,7 @@ export function normalizeThemeSettings(
     compactShowTrafficTotal: enabledUnlessFalse(settings?.compactShowTrafficTotal),
     compactShowBilling: enabledUnlessFalse(settings?.compactShowBilling),
     compactShowUptime: enabledUnlessFalse(settings?.compactShowUptime),
+    showHomePing: enabledUnlessFalse(settings?.showHomePing),
     // Default OFF (opt-in): connection counts are a niche metric and many agents
     // don't report them, so we only show when explicitly enabled.
     showConnections: settings?.showConnections === true,

@@ -700,13 +700,15 @@ export const CompactNodeCard = memo(function CompactNodeCard({
         renewalPrice={renewalPrice}
       />
       <CompactTrafficBar traffic={traffic} uptimeLabel={uptimeLabel} />
-      <CompactNodeHealth
-        ping={ping}
-        pingBuckets={pingBuckets}
-        latencyColor={latencyColor}
-        lossColor={lossColor}
-        hasHomepagePingBinding={hasHomepagePingBinding}
-      />
+      {themeSettings.showHomePing && (
+        <CompactNodeHealth
+          ping={ping}
+          pingBuckets={pingBuckets}
+          latencyColor={latencyColor}
+          lossColor={lossColor}
+          hasHomepagePingBinding={hasHomepagePingBinding}
+        />
+      )}
     </article>
   );
 });

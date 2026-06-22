@@ -150,22 +150,24 @@ export const NodeCard = memo(function NodeCard({
             </div>
           )}
 
-          <NodeHealthSection
-            ping={ping}
-            pingBuckets={pingBuckets}
-            redrawKey={resolvedAppearance}
-            hasHomepagePingBinding={hasHomepagePingBinding}
-            latencyColor={latencyColor}
-            lossColor={lossColor}
-            latencyHoverTime={latencyHoverTime}
-            lossHoverTime={lossHoverTime}
-            hoveredLatencyBucket={hoveredLatencyBucket}
-            hoveredLossBucket={hoveredLossBucket}
-            latencyHoverColor={latencyHoverColor}
-            lossHoverColor={lossHoverColor}
-            onLatencyHover={setHoveredLatencyIndex}
-            onLossHover={setHoveredLossIndex}
-          />
+          {themeSettings.showHomePing && (
+            <NodeHealthSection
+              ping={ping}
+              pingBuckets={pingBuckets}
+              redrawKey={resolvedAppearance}
+              hasHomepagePingBinding={hasHomepagePingBinding}
+              latencyColor={latencyColor}
+              lossColor={lossColor}
+              latencyHoverTime={latencyHoverTime}
+              lossHoverTime={lossHoverTime}
+              hoveredLatencyBucket={hoveredLatencyBucket}
+              hoveredLossBucket={hoveredLossBucket}
+              latencyHoverColor={latencyHoverColor}
+              lossHoverColor={lossHoverColor}
+              onLatencyHover={setHoveredLatencyIndex}
+              onLossHover={setHoveredLossIndex}
+            />
+          )}
         </div>
 
         <NodeCardFooter

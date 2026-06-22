@@ -223,6 +223,7 @@ function pickManagedThemeSettings(settings: ResolvedThemeSettings): ThemeSetting
     compactShowTrafficTotal: settings.compactShowTrafficTotal,
     compactShowBilling: settings.compactShowBilling,
     compactShowUptime: settings.compactShowUptime,
+    showHomePing: settings.showHomePing,
     showConnections: settings.showConnections,
     costIgnoredNodes: settings.costIgnoredNodes,
     costRateApiUrl: settings.costRateApiUrl,
@@ -266,6 +267,7 @@ export function ThemeManage() {
   const [draftCompactShowTrafficTotal, setDraftCompactShowTrafficTotal] = useState(true);
   const [draftCompactShowBilling, setDraftCompactShowBilling] = useState(true);
   const [draftCompactShowUptime, setDraftCompactShowUptime] = useState(true);
+  const [draftShowHomePing, setDraftShowHomePing] = useState(true);
   const [draftShowConnections, setDraftShowConnections] = useState(false);
   const [draftCostIgnoredText, setDraftCostIgnoredText] = useState("");
   const [draftCostRateApiUrl, setDraftCostRateApiUrl] = useState(
@@ -350,6 +352,7 @@ export function ThemeManage() {
     setDraftCompactShowTrafficTotal(next.compactShowTrafficTotal);
     setDraftCompactShowBilling(next.compactShowBilling);
     setDraftCompactShowUptime(next.compactShowUptime);
+    setDraftShowHomePing(next.showHomePing);
     setDraftShowConnections(next.showConnections);
     setDraftCostIgnoredText(next.costIgnoredNodes.join("\n"));
     setDraftCostRateApiUrl(next.costRateApiUrl);
@@ -454,6 +457,7 @@ export function ThemeManage() {
       compactShowTrafficTotal: draftCompactShowTrafficTotal,
       compactShowBilling: draftCompactShowBilling,
       compactShowUptime: draftCompactShowUptime,
+      showHomePing: draftShowHomePing,
       showConnections: draftShowConnections,
       costIgnoredNodes: draftCostIgnoredNodes,
       costRateApiUrl: normalizedDraftCostRateApiUrl,
@@ -482,6 +486,7 @@ export function ThemeManage() {
       draftCompactShowTrafficTotal,
       draftCompactShowBilling,
       draftCompactShowUptime,
+      draftShowHomePing,
       draftShowConnections,
       draftCostIgnoredNodes,
       normalizedDraftCostRateApiUrl,
@@ -1239,6 +1244,22 @@ export function ThemeManage() {
         }
       >
         <div className="flex flex-col gap-4">
+          <label className="surface-inset flex items-center justify-between gap-3 px-4 py-3">
+            <span className="min-w-0">
+              <span className="block text-[13px] font-medium text-[var(--text-primary)]">
+                启用主页延迟检测
+              </span>
+              <span className="mt-1 block text-[11px] text-[var(--text-tertiary)]">
+                关闭后，首页节点卡片将不再显示延迟与丢包率信息。
+              </span>
+            </span>
+            <input
+              type="checkbox"
+              checked={draftShowHomePing}
+              onChange={(event) => setDraftShowHomePing(event.target.checked)}
+              className="h-4 w-4 shrink-0 accent-[var(--accent-500)]"
+            />
+          </label>
           <div className="grid gap-3 md:grid-cols-[minmax(0,1fr)_minmax(240px,320px)]">
             <label className="surface-inset flex items-center gap-2 px-3 py-2">
               <Search size={14} className="text-[var(--text-tertiary)]" />

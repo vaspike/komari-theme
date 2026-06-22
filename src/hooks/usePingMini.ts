@@ -526,6 +526,7 @@ export function useHomepagePingOverview() {
 
   useEffect(() => {
     if (!themeSettings.isReady) return;
+    if (!themeSettings.showHomePing) return;
     activeConsumers += 1;
     ensurePingOverviewStarted(visibleUuids, themeSettings.homepagePingBindings);
     return () => {
@@ -535,7 +536,7 @@ export function useHomepagePingOverview() {
         stopPingPolling();
       }
     };
-  }, [themeSettings.homepagePingBindings, themeSettings.isReady, visibleUuids]);
+  }, [themeSettings.homepagePingBindings, themeSettings.showHomePing, themeSettings.isReady, visibleUuids]);
 }
 
 export function usePingMini(uuid: string): PingOverviewItem {
