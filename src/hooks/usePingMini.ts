@@ -126,7 +126,7 @@ function buildPingOverviewItems(
 
     const stats = lossStatsByClient.get(record.client) ?? { total: 0, lost: 0 };
     stats.total += 1;
-    if (record.value <= 0) {
+    if (record.value < 0) {
       stats.lost += 1;
     }
     lossStatsByClient.set(record.client, stats);
@@ -159,7 +159,7 @@ function buildPingOverviewItems(
     result.set(client, {
       client,
       isAssigned: true,
-      lastValue: latestRecord && latestRecord.value > 0 ? latestRecord.value : null,
+      lastValue: latestRecord && latestRecord.value >= 0 ? latestRecord.value : null,
       values,
       samples,
       max,
@@ -574,7 +574,7 @@ export function usePingMiniBuckets(
       if (bucketIndex >= resolvedCount) bucketIndex = resolvedCount - 1;
 
       totals[bucketIndex] += 1;
-      if (sample.value > 0) {
+      if (sample.value >= 0) {
         positiveSums[bucketIndex] += sample.value;
         positiveCounts[bucketIndex] += 1;
       } else {

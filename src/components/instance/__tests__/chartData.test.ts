@@ -102,7 +102,7 @@ describe("insertMetricGapSentinels — three-state ping semantics", () => {
   it("preserves real loss (null) as a break", () => {
     const points: TimedMetricPoint[] = [
       { time: 0, A: 10 },
-      { time: 60, A: null }, // value <= 0 already encoded as null by the bucketer
+      { time: 60, A: null }, // value < 0 already encoded as null by the bucketer
       { time: 120, A: 12 },
     ];
 

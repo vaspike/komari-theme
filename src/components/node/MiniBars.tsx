@@ -44,7 +44,7 @@ export function MiniBars({ buckets, max, redrawKey, onHoverIndex }: MiniBarsProp
       const safeMax = max > 0 ? max : 1;
 
       bars.forEach(({ value, tone }, index) => {
-        const has = value > 0;
+        const has = value >= 0;
         const barHeight = height * (has ? Math.max(0.2, Math.min(1, value / safeMax)) : 0.25);
         const x = index * (barWidth + gap);
         const y = height - barHeight;

@@ -137,7 +137,7 @@ export function PingChart({
       const anchor = time - lastAnchor <= tolerance ? lastAnchor : time;
       if (anchor === time) lastAnchor = time;
       const current = pointMap.get(anchor) ?? { time: anchor };
-      current[String(record.task_id)] = record.value > 0 ? record.value : null;
+      current[String(record.task_id)] = record.value >= 0 ? record.value : null;
       pointMap.set(anchor, current);
     }
 
@@ -180,7 +180,7 @@ export function PingChart({
       const series = chart[index + 1] as Array<number | null | undefined> | undefined;
       if (!series) continue;
       for (const value of series) {
-        if (typeof value === "number" && Number.isFinite(value) && value > 0) {
+        if (typeof value === "number" && Number.isFinite(value) && value >= 0) {
           if (value < min) min = value;
           if (value > max) max = value;
         }
@@ -282,10 +282,10 @@ export function PingChart({
     return tasks.map((task, index) => {
       const records = grouped.get(task.id) ?? [];
       const positives = records
-        .filter((record) => record.value > 0)
+        .filter((record) => record.value >= 0)
         .map((record) => record.value)
         .sort((a, b) => a - b);
-      const latest = [...records].reverse().find((record) => record.value > 0)?.value ?? null;
+      const latest = [...records].reverse().find((record) => record.value >= 0)?.value ?? null;
       const avg = positives.length
         ? positives.reduce((sum, value) => sum + value, 0) / positives.length
         : null;
@@ -293,11 +293,10 @@ export function PingChart({
       const max = positives.length ? positives[positives.length - 1] : null;
       const p50 = percentileFromSorted(positives, 0.5);
       const p99 = percentileFromSorted(positives, 0.99);
-      // positives are all > 0, so a non-null p50 is always > 0 — the old `p50 > 0`
-      // sub-check was redundant.
+      // value=0 means sub-ms latency (valid), only negative values indicate failure
       const volatility = p50 && p99 ? p99 / p50 : null;
       const total = records.length;
-      const lost = records.filter((record) => record.value <= 0).length;
+      const lost = records.filter((record) => record.value < 0).length;
       const loss = total > 0 ? (lost / total) * 100 : task.loss;
       return {
         ...task,

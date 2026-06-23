@@ -1,7 +1,8 @@
 import { clamp, toHsl } from "@/utils/hsl";
 
 export function latencyHeatColor(ms: number | null | undefined): string {
-  if (ms == null || !Number.isFinite(ms) || ms <= 0) {
+  // ms=0 means sub-millisecond (valid), only negative means timeout/error
+  if (ms == null || !Number.isFinite(ms) || ms < 0) {
     return "var(--text-tertiary)";
   }
 
