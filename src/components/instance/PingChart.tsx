@@ -18,7 +18,7 @@ import {
   detectTypicalIntervalSeconds,
   insertMetricGapSentinels,
 } from "./chartData";
-import { latencyHeatColor, lossHeatColor } from "@/utils/metricTone";
+import { latencyHeatColor, reachabilityHeatColor } from "@/utils/metricTone";
 import { usePreferences } from "@/hooks/usePreferences";
 import type { PingRecord } from "@/types/komari";
 import type { TimedMetricPoint } from "./chartData";
@@ -297,7 +297,7 @@ export function PingChart({
       const volatility = p50 && p99 ? p99 / p50 : null;
       const total = records.length;
       const lost = records.filter((record) => record.value < 0).length;
-      const loss = total > 0 ? (lost / total) * 100 : task.loss;
+      const reachability = total > 0 ? ((total - lost) / total) * 100 : task.reachability;
       return {
         ...task,
         latest,
@@ -309,7 +309,7 @@ export function PingChart({
         volatility,
         total,
         lost,
-        loss,
+        reachability,
         color: taskColors.get(task.id) ?? colorForSeries(index),
       };
     });
@@ -409,7 +409,7 @@ export function PingChart({
               </div>
               <div className="instance-ping-task-stats">
                 <span>均值 {task.avg != null ? `${task.avg.toFixed(1)} ms` : "—"}</span>
-                <span style={{ color: lossHeatColor(task.loss) }}>丢包 {task.loss.toFixed(1)}%</span>
+                <span style={{ color: reachabilityHeatColor(task.reachability) }}>可达 {task.reachability.toFixed(1)}%</span>
                 <span>p99 {task.p99 != null ? `${task.p99.toFixed(0)} ms` : "—"}</span>
                 <span>抖动 {task.volatility != null ? task.volatility.toFixed(2) : "—"}</span>
               </div>

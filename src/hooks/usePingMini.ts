@@ -25,7 +25,7 @@ const EMPTY_PING: PingOverviewItem = {
   values: [],
   samples: [],
   max: 1,
-  loss: null,
+  reachability: null,
 };
 
 interface PingOverviewMapResult {
@@ -104,7 +104,7 @@ function equalPingItem(a: PingOverviewItem | undefined, b: PingOverviewItem | un
     a.isAssigned === b.isAssigned &&
     a.lastValue === b.lastValue &&
     a.max === b.max &&
-    a.loss === b.loss &&
+    a.reachability === b.reachability &&
     equalNumberArray(a.values, b.values) &&
     equalSamples(a.samples, b.samples)
   );
@@ -163,7 +163,7 @@ function buildPingOverviewItems(
       values,
       samples,
       max,
-      loss: lossStats?.total ? (lossStats.lost / lossStats.total) * 100 : null,
+      reachability: lossStats?.total ? ((lossStats.total - lossStats.lost) / lossStats.total) * 100 : null,
     });
   }
 
@@ -270,7 +270,7 @@ async function buildOverviewMap(
       values: [],
       samples: [],
       max: 1,
-      loss: null,
+      reachability: null,
     });
   }
 
@@ -592,7 +592,7 @@ export function usePingMiniBuckets(
       return {
         index,
         value: positiveCount > 0 ? positiveSums[index] / positiveCount : null,
-        loss: total > 0 ? (lost / total) * 100 : null,
+        reachability: total > 0 ? ((total - lost) / total) * 100 : null,
         total,
         lost,
         startAt,

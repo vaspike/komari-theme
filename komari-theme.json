@@ -1,9 +1,9 @@
 {
   "name": "komaritheme",
   "short": "komaritheme",
-  "description": "komaritheme",
-  "version": "1.1.10",
-  "author": "shark&shanyang",
-  "url": "https://github.com/shanyang242/Theme",
+  "description": "Komari 探针主题 — 延迟可达率 / 流量月重置 / 三网延迟监测",
+  "version": "1.2.0",
+  "author": "rivermao",
+  "url": "https://github.com/vaspike/komari-theme",
   "preview": "preview.png"
 }

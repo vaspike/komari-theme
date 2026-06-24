@@ -191,7 +191,7 @@ function derivePingTasks(records: PingRecordsResponse["records"]): PingTask[] {
       id,
       interval: 60,
       name: `任务 #${id}`,
-      loss: 0,
+      reachability: 100,
       clients: [],
       type: "icmp",
       target: "",

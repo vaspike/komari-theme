@@ -11,7 +11,7 @@ import {
   joinDisplayParts,
   parseTags,
 } from "@/utils/format";
-import { latencyHeatColor, lossHeatColor, trafficUsageColor } from "@/utils/metricTone";
+import { latencyHeatColor, reachabilityHeatColor, trafficUsageColor } from "@/utils/metricTone";
 import { resolveTrafficUsage, trafficTypeLabel, type TrafficDisplay } from "@/utils/traffic";
 import { resolveOsInfo } from "@/components/ui/OsLogo";
 
@@ -58,7 +58,7 @@ export function useNodeCardModel(uuid: string, pingBucketCount?: number) {
   const pingModel = useMemo(
     () => ({
       latencyColor: latencyHeatColor(ping.lastValue),
-      lossColor: lossHeatColor(ping.loss),
+      reachabilityColor: reachabilityHeatColor(ping.reachability),
       hasHomepagePingBinding: ping.isAssigned,
     }),
     [ping],

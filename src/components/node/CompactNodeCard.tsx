@@ -26,7 +26,7 @@ import {
   formatBytes,
   trimFixed,
 } from "@/utils/format";
-import { latencyHeatColor, lossHeatColor } from "@/utils/metricTone";
+import { latencyHeatColor, reachabilityHeatColor } from "@/utils/metricTone";
 import { formatHealthBucketTooltip } from "./pingBucketText";
 import { joinTagTitle, nodeDetailLinkLabels, pingEmptyLabels } from "./nodeCardShared";
 import type {
@@ -214,7 +214,7 @@ function HealthBars({
 }: {
   buckets: PingOverviewBucket[];
   max: number;
-  kind: "latency" | "loss";
+  kind: "latency" | "reachability";
 }) {
   const safeMax = Math.max(1, max);
   const bars = buckets.slice(-HEALTH_BAR_COUNT);
@@ -259,16 +259,16 @@ function HealthBars({
       {bars.map((bucket, index) => {
         const hasSamples = bucket.total > 0;
         const latencyValue = bucket.value ?? 0;
-        const lossValue = bucket.loss ?? 0;
+        const reachabilityValue = bucket.reachability ?? 0;
         const active = kind === "latency" ? hasSamples && latencyValue > 0 : hasSamples;
         const height =
           kind === "latency"
             ? `${active ? Math.max(26, Math.min(100, (latencyValue / safeMax) * 100)) : 24}%`
-            : `${active ? Math.max(38, Math.min(100, 84 - Math.min(lossValue, 45))) : 24}%`;
+            : `${active ? Math.max(38, Math.min(100, (reachabilityValue / safeMax) * 100)) : 24}%`;
         const color = active
           ? kind === "latency"
             ? latencyHeatColor(latencyValue)
-            : lossHeatColor(lossValue)
+            : reachabilityHeatColor(reachabilityValue)
           : "var(--progress-bg)";
         const style = {
           "--compact-health-height": height,
@@ -284,7 +284,7 @@ function HealthBars({
             className="compact-node-health-bar"
             style={style}
             data-selected={selectedIndex === index ? "true" : "false"}
-            aria-label={`${kind === "latency" ? "延迟" : "丢包"} ${tooltip}`}
+            aria-label={`${kind === "latency" ? "延迟" : "可达"} ${tooltip}`}
             title={tooltip}
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}
@@ -608,13 +608,13 @@ const CompactNodeHealth = memo(function CompactNodeHealth({
   ping,
   pingBuckets,
   latencyColor,
-  lossColor,
+  reachabilityColor,
   hasHomepagePingBinding,
 }: {
   ping: PingOverviewItem;
   pingBuckets: PingOverviewBucket[];
   latencyColor: string;
-  lossColor: string;
+  reachabilityColor: string;
   hasHomepagePingBinding: boolean;
 }) {
   // "无样本" when bound-but-no-samples vs "未配置" when unbound — see pingEmptyLabels.
@@ -632,12 +632,12 @@ const CompactNodeHealth = memo(function CompactNodeHealth({
       </CompactHealthItem>
       <CompactHealthItem
         icon={<Unplug size={12} />}
-        label="丢包"
-        value={ping.loss != null ? ping.loss.toFixed(1) : emptyText}
-        unit={ping.loss != null ? "%" : undefined}
-        color={lossColor}
+        label="可达"
+        value={ping.reachability != null ? ping.reachability.toFixed(1) : emptyText}
+        unit={ping.reachability != null ? "%" : undefined}
+        color={reachabilityColor}
       >
-        <HealthBars buckets={pingBuckets} max={1} kind="loss" />
+        <HealthBars buckets={pingBuckets} max={100} kind="reachability" />
       </CompactHealthItem>
     </div>
   );
@@ -670,7 +670,7 @@ export const CompactNodeCard = memo(function CompactNodeCard({
     downRate,
     isOffline,
     latencyColor,
-    lossColor,
+    reachabilityColor,
     loadFraction,
     hasHomepagePingBinding,
     osName,
@@ -705,7 +705,7 @@ export const CompactNodeCard = memo(function CompactNodeCard({
           ping={ping}
           pingBuckets={pingBuckets}
           latencyColor={latencyColor}
-          lossColor={lossColor}
+          reachabilityColor={reachabilityColor}
           hasHomepagePingBinding={hasHomepagePingBinding}
         />
       )}

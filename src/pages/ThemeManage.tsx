@@ -1250,7 +1250,7 @@ export function ThemeManage() {
                 启用主页延迟检测
               </span>
               <span className="mt-1 block text-[11px] text-[var(--text-tertiary)]">
-                关闭后，首页节点卡片将不再显示延迟与丢包率信息。
+                关闭后，首页节点卡片将不再显示延迟与可达率信息。
               </span>
             </span>
             <input

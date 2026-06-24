@@ -297,7 +297,7 @@ export const PingTaskSchema = z
     id: z.number(),
     interval: z.number().default(60),
     name: z.string().default(""),
-    loss: z.number().default(0),
+    reachability: z.number().default(100),
     clients: z.array(z.string()).default([]),
     type: z.string().default("icmp"),
     target: z.string().default(""),
@@ -309,7 +309,7 @@ export interface PingTask {
   id: number;
   interval: number;
   name: string;
-  loss: number;
+  reachability: number;
   clients: string[];
   type: string;
   target: string;
@@ -330,7 +330,7 @@ export interface PingRecordsResponse {
 export const PingBasicInfoSchema = z
   .object({
     client: z.string().default(""),
-    loss: z.number().default(0),
+    reachability: z.number().default(100),
     min: z.number().default(0),
     max: z.number().default(0),
   })
@@ -338,7 +338,7 @@ export const PingBasicInfoSchema = z
 
 export interface PingBasicInfo {
   client: string;
-  loss: number;
+  reachability: number;
   min: number;
   max: number;
 }
@@ -350,7 +350,7 @@ export interface PingOverviewItem {
   values: number[];
   samples: Array<{ time: number; value: number }>;
   max: number;
-  loss: number | null;
+  reachability: number | null;
 }
 
 export interface TrafficTrendSample {
@@ -362,7 +362,7 @@ export interface TrafficTrendSample {
 export interface PingOverviewBucket {
   index: number;
   value: number | null;
-  loss: number | null;
+  reachability: number | null;
   total: number;
   lost: number;
   startAt: number | null;

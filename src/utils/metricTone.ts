@@ -60,31 +60,36 @@ export function trafficUsageColor(fraction: number | null | undefined): string {
   return toHsl(40 - 34 * t, 82 + 4 * t, 52 - 6 * t);
 }
 
-export function lossHeatColor(pct: number | null | undefined): string {
+/** Reachability: 100% = green, declining → yellow → amber → red.
+ *  Mirrors latency direction but with percentage thresholds. */
+export function reachabilityHeatColor(pct: number | null | undefined): string {
   if (pct == null || !Number.isFinite(pct) || pct < 0) {
     return "var(--text-tertiary)";
   }
 
-  if (pct <= 1) {
-    const t = clamp(pct / 1, 0, 1);
+  if (pct >= 99) {
+    const t = clamp((100 - pct) / 1, 0, 1);
     return toHsl(145 - 18 * t, 62 + 8 * t, 48 + 3 * t);
   }
 
-  if (pct <= 3) {
-    const t = clamp((pct - 1) / 2, 0, 1);
+  if (pct >= 97) {
+    const t = clamp((99 - pct) / 2, 0, 1);
     return toHsl(127 - 47 * t, 70 + 6 * t, 51 + 1 * t);
   }
 
-  if (pct <= 5) {
-    const t = clamp((pct - 3) / 2, 0, 1);
+  if (pct >= 95) {
+    const t = clamp((97 - pct) / 2, 0, 1);
     return toHsl(80 - 30 * t, 76 + 6 * t, 52 + 1 * t);
   }
 
-  if (pct <= 10) {
-    const t = clamp((pct - 5) / 5, 0, 1);
+  if (pct >= 90) {
+    const t = clamp((95 - pct) / 5, 0, 1);
     return toHsl(50 - 20 * t, 82 + 4 * t, 53 - 1 * t);
   }
 
-  const t = clamp((pct - 10) / 20, 0, 1);
+  const t = clamp((90 - pct) / 20, 0, 1);
   return toHsl(30 - 24 * t, 86 - 2 * t, 52 - 8 * t);
 }
+
+/** @deprecated use reachabilityHeatColor instead */
+export const lossHeatColor = reachabilityHeatColor;

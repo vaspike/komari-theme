@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { CanvasStrip, fillRoundedRect, safeCanvasColor } from "./CanvasStrip";
 import { getBarGeometry, getBarSlot } from "./nodeCardShared";
-import { lossHeatColor } from "@/utils/metricTone";
+import { reachabilityHeatColor } from "@/utils/metricTone";
 import type { PingOverviewBucket } from "@/types/komari";
 
 const ACTIVE_BAR_HEIGHT = 0.84;
@@ -18,13 +18,11 @@ export function QualityBars({ buckets, redrawKey, onHoverIndex }: QualityBarsPro
     () =>
       buckets.map((bucket) => {
         const hasBucketValue =
-          bucket.loss != null && Number.isFinite(bucket.loss) && bucket.total > 0;
+          bucket.reachability != null && Number.isFinite(bucket.reachability) && bucket.total > 0;
         return {
           active: hasBucketValue,
           index: bucket.index,
-          // Normalize to a canvas-safe color here (per bucket, on data change)
-          // rather than per bar on every redraw.
-          tone: safeCanvasColor(hasBucketValue ? lossHeatColor(bucket.loss) : "var(--progress-bg)"),
+          tone: safeCanvasColor(hasBucketValue ? reachabilityHeatColor(bucket.reachability) : "var(--progress-bg)"),
         };
       }),
     [buckets],

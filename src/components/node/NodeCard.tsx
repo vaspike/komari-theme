@@ -26,7 +26,7 @@ import {
 } from "@/utils/format";
 import {
   latencyHeatColor,
-  lossHeatColor,
+  reachabilityHeatColor,
 } from "@/utils/metricTone";
 import { Flag } from "@/components/ui/Flag";
 import { OsLogo } from "@/components/ui/OsLogo";
@@ -37,7 +37,7 @@ import { CanvasStrip, mixSrgbTowardWhite, safeCanvasColor } from "./CanvasStrip"
 import { joinTagTitle, nodeDetailLinkLabels, pingEmptyLabels } from "./nodeCardShared";
 import {
   formatLatencyBucketSummary,
-  formatLossBucketSummary,
+  formatReachabilityBucketSummary,
   formatPingBucketWindow,
 } from "./pingBucketText";
 import { clsx } from "clsx";
@@ -58,7 +58,7 @@ export const NodeCard = memo(function NodeCard({
   const themeSettings = useThemeSettings();
   const model = useNodeCardModel(uuid);
   const [hoveredLatencyIndex, setHoveredLatencyIndex] = useState<number | null>(null);
-  const [hoveredLossIndex, setHoveredLossIndex] = useState<number | null>(null);
+  const [hoveredReachabilityIndex, setHoveredLossIndex] = useState<number | null>(null);
 
   if (!model.node) {
     return (
@@ -83,7 +83,7 @@ export const NodeCard = memo(function NodeCard({
     uptime,
     renewalPrice,
     latencyColor,
-    lossColor,
+    reachabilityColor,
     loadFraction,
     upRate,
     downRate,
@@ -96,14 +96,14 @@ export const NodeCard = memo(function NodeCard({
   const showConnections = themeSettings.isReady && themeSettings.showConnections;
   const hoveredLatencyBucket =
     hoveredLatencyIndex != null ? (pingBuckets[hoveredLatencyIndex] ?? null) : null;
-  const hoveredLossBucket =
-    hoveredLossIndex != null ? (pingBuckets[hoveredLossIndex] ?? null) : null;
+  const hoveredReachabilityBucket =
+    hoveredReachabilityIndex != null ? (pingBuckets[hoveredReachabilityIndex] ?? null) : null;
   const latencyHoverTime = formatPingBucketWindow(hoveredLatencyBucket);
-  const lossHoverTime = formatPingBucketWindow(hoveredLossBucket);
+  const reachabilityHoverTime = formatPingBucketWindow(hoveredReachabilityBucket);
   const latencyHoverColor = hoveredLatencyBucket?.value != null
     ? latencyHeatColor(hoveredLatencyBucket.value)
     : "var(--text-tertiary)";
-  const lossHoverColor = hoveredLossBucket ? lossHeatColor(hoveredLossBucket.loss) : null;
+  const reachabilityHoverColor = hoveredReachabilityBucket ? reachabilityHeatColor(hoveredReachabilityBucket.reachability) : null;
 
   return (
     <article
@@ -157,15 +157,15 @@ export const NodeCard = memo(function NodeCard({
               redrawKey={resolvedAppearance}
               hasHomepagePingBinding={hasHomepagePingBinding}
               latencyColor={latencyColor}
-              lossColor={lossColor}
+              reachabilityColor={reachabilityColor}
               latencyHoverTime={latencyHoverTime}
-              lossHoverTime={lossHoverTime}
+              reachabilityHoverTime={reachabilityHoverTime}
               hoveredLatencyBucket={hoveredLatencyBucket}
-              hoveredLossBucket={hoveredLossBucket}
+              hoveredReachabilityBucket={hoveredReachabilityBucket}
               latencyHoverColor={latencyHoverColor}
-              lossHoverColor={lossHoverColor}
+              reachabilityHoverColor={reachabilityHoverColor}
               onLatencyHover={setHoveredLatencyIndex}
-              onLossHover={setHoveredLossIndex}
+              onReachabilityHover={setHoveredLossIndex}
             />
           )}
         </div>
@@ -389,30 +389,30 @@ const NodeHealthSection = memo(function NodeHealthSection({
   redrawKey,
   hasHomepagePingBinding,
   latencyColor,
-  lossColor,
+  reachabilityColor,
   latencyHoverTime,
-  lossHoverTime,
+  reachabilityHoverTime,
   hoveredLatencyBucket,
-  hoveredLossBucket,
+  hoveredReachabilityBucket,
   latencyHoverColor,
-  lossHoverColor,
+  reachabilityHoverColor,
   onLatencyHover,
-  onLossHover,
+  onReachabilityHover,
 }: {
   ping: PingOverviewItem;
   pingBuckets: PingOverviewBucket[];
   redrawKey: string;
   hasHomepagePingBinding: boolean;
   latencyColor: string;
-  lossColor: string;
+  reachabilityColor: string;
   latencyHoverTime: string | null;
-  lossHoverTime: string | null;
+  reachabilityHoverTime: string | null;
   hoveredLatencyBucket: PingOverviewBucket | null;
-  hoveredLossBucket: PingOverviewBucket | null;
+  hoveredReachabilityBucket: PingOverviewBucket | null;
   latencyHoverColor: string;
-  lossHoverColor: string | null;
+  reachabilityHoverColor: string | null;
   onLatencyHover: (index: number | null) => void;
-  onLossHover: (index: number | null) => void;
+  onReachabilityHover: (index: number | null) => void;
 }) {
   const { title: emptyTitle, text: emptyText } = pingEmptyLabels(hasHomepagePingBinding);
 
@@ -464,12 +464,12 @@ const NodeHealthSection = memo(function NodeHealthSection({
         <div className="server-health-head">
           <div className="server-health-label">
             <Unplug size={13} strokeWidth={2} />
-            <span>丢包率</span>
+            <span>可达率</span>
           </div>
-          <span className="server-health-value tabular" style={{ color: lossColor }}>
-            {ping.loss != null ? (
+          <span className="server-health-value tabular" style={{ color: reachabilityColor }}>
+            {ping.reachability != null ? (
               <>
-                {ping.loss.toFixed(1)}
+                {ping.reachability.toFixed(1)}
                 <span className="server-health-unit">%</span>
               </>
             ) : (
@@ -484,18 +484,18 @@ const NodeHealthSection = memo(function NodeHealthSection({
             <QualityBars
               buckets={pingBuckets}
               redrawKey={redrawKey}
-              onHoverIndex={onLossHover}
+              onHoverIndex={onReachabilityHover}
             />
           ) : (
             <div className="server-health-placeholder">未配置首页 Ping</div>
           )}
-          {lossHoverTime && hoveredLossBucket && (
+          {reachabilityHoverTime && hoveredReachabilityBucket && (
             <div className="server-health-tooltip">
-              <div className="instance-chart-tooltip-time">{lossHoverTime}</div>
+              <div className="instance-chart-tooltip-time">{reachabilityHoverTime}</div>
               <div className="instance-chart-tooltip-row">
-                <span className="instance-chart-tooltip-dot" style={{ background: lossHoverColor ?? lossColor }} />
-                <span>丢包率</span>
-                <strong>{formatLossBucketSummary(hoveredLossBucket)}</strong>
+                <span className="instance-chart-tooltip-dot" style={{ background: reachabilityHoverColor ?? reachabilityColor }} />
+                <span>可达率</span>
+                <strong>{formatReachabilityBucketSummary(hoveredReachabilityBucket)}</strong>
               </div>
             </div>
           )}

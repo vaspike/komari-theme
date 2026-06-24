@@ -25,23 +25,26 @@ export function formatLatencyBucketSummary(bucket: PingOverviewBucket | null) {
   return bucket.total > 0 ? "失败" : "无样本";
 }
 
-export function formatLossBucketSummary(
+export function formatReachabilityBucketSummary(
   bucket: PingOverviewBucket | null,
   separator = " ",
 ) {
   if (!bucket) return "—";
-  if (bucket.total <= 0 || bucket.loss == null) return "无样本";
-  return `${trimFixed(bucket.loss, 1)}%${separator}${bucket.lost}/${bucket.total}`;
+  if (bucket.total <= 0 || bucket.reachability == null) return "无样本";
+  return `${trimFixed(bucket.reachability, 1)}%${separator}${bucket.total - bucket.lost}/${bucket.total} (可达)`;
 }
+
+/** @deprecated use formatReachabilityBucketSummary */
+export const formatLossBucketSummary = formatReachabilityBucketSummary;
 
 export function formatHealthBucketTooltip(
   bucket: PingOverviewBucket,
-  kind: "latency" | "loss",
+  kind: "latency" | "reachability",
 ) {
   const window = formatPingBucketWindow(bucket);
   const summary =
     kind === "latency"
       ? formatLatencyBucketSummary(bucket)
-      : formatLossBucketSummary(bucket, " · ");
+      : formatReachabilityBucketSummary(bucket, " · ");
   return window ? `${window} · ${summary}` : summary;
 }
